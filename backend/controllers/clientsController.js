@@ -1,23 +1,23 @@
-import db from '../db/index.js';
+import { pool } from '../db.js';
 
-export const getClients = async (req, res) => {
+export const getAllClients = async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM clients');
+    const result = await pool.query('SELECT * FROM clients');
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: 'Ошибка при получении клиентов' });
+    res.status(500).json({ error: err.message });
   }
 };
 
 export const createClient = async (req, res) => {
-  const { name, contactPerson, phone, email } = req.body;
+  const { company_name, contact_name, phone, email } = req.body;
   try {
-    const result = await db.query(
-      'INSERT INTO clients (name, contact_person, phone, email) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, contactPerson, phone, email]
+    await pool.query(
+      'INSERT INTO clients(company_name, contact_name, phone, email) VALUES ($1, $2, $3, $4)',
+      [company_name, contact_name, phone, email]
     );
-    res.status(201).json(result.rows[0]);
+    res.status(201).json({ message: 'Клиент добавлен' });
   } catch (err) {
-    res.status(500).json({ error: 'Ошибка при создании клиента' });
+    res.status(500).json({ error: err.message });
   }
 };
