@@ -1,4 +1,4 @@
-import BaseService from '../db/BaseService.js';
+import BaseService from '../BaseService.js';
 const service = new BaseService('service_periods');
 
 export const getServicePeriods = async (req, res) => {
